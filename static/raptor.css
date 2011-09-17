@@ -1,0 +1,452 @@
+/* Utility stuff */
+.clearfix {
+	display: block;
+}
+
+/* General stuff */
+body {
+	margin: 0;
+	padding: 0;
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size: 11px;
+}
+
+form {
+	margin: 0;
+	padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #333333;
+	font-size: 13px;
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	font-size: 14px;
+}
+
+h4, h5 {
+	font-size: 11px;
+}
+
+p {
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size: 11px;
+	margin: 1em 0;
+	text-align: left;
+}
+
+a {
+	color: #3B5998;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.iconImg {
+	float: left;
+}
+
+textarea, .inputtext, .inputpassword {
+	border: 1px solid #BDC7D8;
+	padding-bottom: 3px;
+}
+
+/* Overall container stuff */
+.rbx #globalContainer {
+	width: 981px;
+}
+
+#globalContainer {
+	margin: 0 auto;
+}
+
+#leftCol {
+	display: none;
+	float: left;
+	padding: 20px 0 0 2px;
+	width: 179px;
+	word-wrap: break-word;
+}
+
+.hasLeftCol #leftCol {
+	display: block;
+}
+
+#rightCol {
+	float: right;
+	margin-top: 10000px;
+	padding-right: 0;
+	width: 244px;
+	word-wrap: break-word;
+}
+
+.hasRightCol #rightCol {
+	margin-top: 0;
+}
+
+.hasLeftCol #rightCol {
+	padding-right: 20px;
+}
+
+/* Header stuff */
+#purpleBar {
+	background-color: #5A3A7B;
+	height: 41px;
+	left: 0;
+	position: absolute;
+	width: 100%;
+	z-index: -1;
+}
+
+.rbx #pageHead {
+	margin: 0;
+	width: auto;
+}
+
+#pageHead {
+	margin: 0 auto;
+	width: 980px;
+}
+
+.headerBar {
+	padding-top: 10px;
+}
+
+#pageLogo {
+	float: left;
+	margin-left: -6px;
+}
+
+#pageLogo a {
+	background-color: #5A3A7B;
+	background-image: url("impressionLogoInactive.png");
+	background-repeat: no-repeat;
+	display: block;
+	margin-top: -6px;
+	height: 37px;
+	width: 180px;
+}
+
+#pageLogo a:hover,
+#pageLogo a:focus,
+#pageLogo a:active {
+	background-color: #815A94;
+	background-image: url("impressionLogoActive.png");
+	background-repeat: no-repeat;
+	outline: medium none;
+}
+
+#headNav {
+	height: 30px;
+	margin-left: 180px;
+	background-color: #815A94;
+	border-color: #372469 #372469;
+	border-style: solid solid none;
+	border-width: 1px 1px 0;
+}
+
+.lfloat {
+	float: left;
+}
+
+.rfloat {
+	float: right;
+}
+
+#navSearch {
+	margin: 5px 0 0 4px;
+	width: 300px;
+}
+
+.wrap {
+	border-style: solid;
+	border-width: 0 1px;
+	overflow: hidden;
+	border-color: #5A3A7B;
+	background: white;
+}
+
+.textInput {
+	width: 100%;
+	outline: 0 none;
+	border: 0 none;
+}
+
+.textInput span {
+	display: inline-block;
+	border-color: #EDEDED;
+	border-right: 0 none;
+	border-style: solid none none;
+	border-width: 1px 0 0;
+	padding: 1px 0 2px;
+	position: relative;
+}
+
+.textInput input {
+	border-color: #E5E5E5;
+	border-style: none solid none none;
+	border-width: 0 1px 0 0;
+	margin: 0 22px 0 5px;
+	outline: medium none;
+	padding: 1px 5px 2px 0;
+	width: 270px;
+	padding-bottom: 1px !important;
+}
+
+.textInput button {
+	background-color: #FFFFFF;
+	background-image: url("search.png");
+	background-repeat: no-repeat;
+	border: 0 none;
+	cursor: pointer;
+	display: block;
+	float: right;
+	height: 19px;
+	width: 22px;
+	padding: 0;
+	right: 0;
+	top: 0;
+	position: absolute;
+	z-index: 2;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#pageNav li {
+	float: left;
+}
+
+#pageNav a {
+	color: white;
+	display: inline-block;
+	font-weight: bold;
+	height: 22px;
+	padding: 8px 10px 0;
+	text-decoration: none;
+}
+
+#pageNav a:active,
+#pageNav a:hover,
+#pageNav a:focus {
+	background-color: #8c67a0;
+	outline: medium none;
+}
+
+/* Content layout stuff */
+.rb_content {
+	padding-bottom: 20px;
+}
+
+.rbx .rb_content {
+	padding-bottom: 0;
+}
+
+#content {
+	margin: 0;
+	padding: 0;
+	width: auto;
+}
+
+.rbx #globalContainer #content {
+	min-height: inherit;
+}
+
+.hasLeftCol #mainContainer {
+	border-right: 1px solid #B3B3B3;
+}
+
+#mainContainer {
+	display: block;
+	margin-left: -1px;
+	width: 100%;
+}
+
+#mainContainer #leftCol {
+	min-height: 600px;
+}
+
+#mainContainer #rightCol {
+	padding-top: 6px;
+}
+
+#contentCol {
+	background-color: white;
+	padding-top: 15px;
+}
+
+.hasLeftCol #contentCol {
+	border-left: 1px solid #B3B3B3;
+	margin-left: 181px;
+}
+
+#contentArea {
+	margin-right: 1px;
+	padding-left: 1px;
+	word-wrap: break-word;
+}
+
+.hasLeftCol #contentArea,
+.hasRightCol #contentArea {
+	float: left;
+	margin-right: 0;
+}
+
+.hasLeftCol #contentArea {
+	padding: 0 20px;
+	width: 759px;
+}
+
+.hasRightCol #contentArea {
+	width: 714px;
+}
+
+.hasLeftCol .hasRightCol #contentArea {
+	padding-right: 0;
+	width: 493px;
+}
+
+#bottomContent {
+	clear: both;
+	padding: 0 20px 12px;
+}
+
+/* Content stuff */
+.profileImg {
+	margin-right: 8px;
+}
+
+.profileImg img {
+	width: 50px;
+	height: 50px;
+}
+
+#userDetails {
+	display: table-cell;
+}
+
+#userDetails > a:first-child {
+	display: block;
+	font-weight: bold;
+	padding: 4px 0 1px;
+}
+
+#userDetails > a {
+	display: table-cell;
+	padding: 2px 0 0 5px;
+}
+
+#userDetails > a:first-child + a {
+	display: block;
+	padding: 0;
+}
+
+#navBar {
+	margin-top: 10px;
+}
+
+#navBar hr {
+	border: none;
+	border-top: 1px solid #EEE;
+}
+
+#navBar a {
+	color: #333333;
+	padding: 3px 8px 4px 28px;
+	line-height: 13px;
+	position: relative;
+	display: block;
+}
+
+#navBar a span.imgWrap {
+	position: absolute;
+	left: 5px;
+	top: 2px;
+	width: 18px;
+}
+
+#navBar li.selectedItem, #navBar li.selectedItem:hover {
+	background-color: #E3D3E2;
+	border-bottom: solid 1px white;
+}
+
+#navBar li:hover {
+	background-color: #F4EDF4;
+}
+
+#navBar .selectedItem a {
+	font-weight: bold;
+}
+
+/* Center column stuff */
+
+/* Right column stuff */
+#rightCol div.right_column {
+	padding-top: 38px;
+}
+
+#rightCol div.comp_box {
+}
+
+.comp_box {
+	padding-bottom: 10px;
+}
+
+.comp_box .comp_header {
+	border-top: 1px solid #E2E2E2;
+	padding: 4px 5px 4px;
+	background-color: #F2F2F2;
+	margin-bottom: 10px;
+}
+
+.comp_box .comp_body {
+	padding-left: 5px;
+	padding-right: 5px;
+	position: relative;
+}
+
+.comp_box .comp_body.with_icon {
+	padding-left: 24px;
+}
+
+.comp_body.with_icon > img:first-child {
+	position: absolute;
+	left: 5px;
+	width: 16px;
+	height: 16px;
+}
+
+.comp_body h5 {
+	padding-bottom: 5px;
+}
+
+.minischedule_item a:first-child {
+	font-weight: bold;
+}
+
+.minischedule_item {
+	color: #808080;
+	padding-bottom: 4px;
+}
+
+/* Footer stuff */
+.hasLeftCol #pageFooter {
+	background-color: white;
+	clear: both;
+	margin-left: 180px;
+}
+
+.rbx #pageFooter {
+	margin: auto;
+	padding: auto;
+}
+
+#pageFooter {
+	color: #737373;
+	font-size: 11px;
+}
