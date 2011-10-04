@@ -27,32 +27,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression\Models\Repositories;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+use Doctrine\ORM\EntityRepository,
+    Impression\Models\TorrentState;
 
 /**
- * Description of Index
+ * Description of TorrentStateRepository
  *
  * @author predakanga
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
+class TorrentStateRepository extends EntityRepository {
+    public function getActiveDownloadCountForUser($user) {
+        $q = $this->_em->createQuery("SELECT COUNT(ts.id) FROM Impression\Models\TorrentState ts
+                                      WHERE ts.currentState = ?1 AND ts.user = ?2")
+                       ->setParameter(1, TorrentState::DOWNLOADING)
+                       ->setParameter(2, $user);
+        return $q->getSingleScalarResult();
     }
     
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
+    public function getActiveUploadCountForUser($user) {
+        $q = $this->_em->createQuery("SELECT COUNT(ts.id) FROM Impression\Models\TorrentState ts
+                                      WHERE ts.currentState = ?1 AND ts.user = ?2")
+                       ->setParameter(1, TorrentState::UPLOADING)
+                       ->setParameter(2, $user);
+        return $q->getSingleScalarResult();
     }
 }
 

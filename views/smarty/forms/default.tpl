@@ -1,9 +1,17 @@
 {if !$multiform}
 <div class="box-6">
 {if $action}
+    {if $has_file}
+    <form action="{$action}" method="{$method}" enctype="multipart/form-data">
+    {else}
     <form action="{$action}" method="{$method}">
+    {/if}
 {else}
+    {if $has_file}
+    <form method="{$method}" enctype="multipart/form-data">
+    {else}
     <form method="{$method}">
+    {/if}
 {/if}
 {/if}
 {if $multiform}

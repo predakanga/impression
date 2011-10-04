@@ -30,29 +30,16 @@
 namespace Impression\Controllers;
 
 use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+    Fossil\Plugins\Users\Controllers\PrivateController;
 
 /**
- * Description of Index
+ * Description of LoginRequiredController
  *
  * @author predakanga
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
-    }
-    
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
+class LoginRequiredController extends PrivateController {
+    protected function unauthorizedAction(\Fossil\Requests\BaseRequest $req) {
+        return new \Fossil\Responses\RedirectResponse("?controller=login");
     }
 }
 

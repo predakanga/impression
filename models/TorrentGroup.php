@@ -27,33 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression\Models;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+use Fossil\Models\Model;
 
 /**
- * Description of Index
+ * Description of TorrentGroup
  *
  * @author predakanga
+ * @Entity
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
-    }
-    
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
-    }
+class TorrentGroup extends Model {
+    /** @Id @GeneratedValue @Column(type="integer") */
+    protected $id;
+    /** @Column(type="string") */
+    protected $name;
+    /** @OneToMany(targetEntity="Torrent", mappedBy="group") */
+    protected $torrents;
 }
 
 ?>

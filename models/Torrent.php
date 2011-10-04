@@ -27,32 +27,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression\Models;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+use Fossil\Models\Model;
 
 /**
- * Description of Index
+ * Description of Torrent
  *
  * @author predakanga
+ * @Entity
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
+class Torrent extends Model {
+    /** @Id @GeneratedValue @Column(type="integer") */
+    protected $id;
+    /** @Column(type="blob") */
+    protected $torrentData;
+    /** @ManyToOne(targetEntity="TorrentGroup", inversedBy="torrents") */
+    protected $group;
+    /** @Column(type="string") */
+    protected $filename;
+    /** @Column(type="datetime") */
+    protected $uploadedAt;
+    /** @Column(type="integer") */
+    protected $trackerID;
+    /** @Column(length=32) */
+    protected $infohash;
+    /**
+     * @ManyToOne(targetEntity="Fossil\Plugins\Users\Models\User", inversedBy="uploadedTorrents")
+     * @F:GenerateReverse
+     * @var User[]
+     */
+    protected $uploader;
+    /**
+     * @OneToMany(targetEntity="TorrentState", mappedBy="torrent")
+     * @var TorrentState[]
+     */
+    protected $currentStates;
+    
+    public function save() {
+        // Save the torrent
+        parent::save();
+        
+        // And send it to the tracker
+        OM::Tracker()->registerTorrent($this);
     }
     
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
+    public function delete() {
+        // Remove the torrent
+        parent::delete();
+        
+        // And update the tracker
+        OM::Tracker()->removeTorrent($this);
     }
 }
 

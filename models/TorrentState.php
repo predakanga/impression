@@ -27,33 +27,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression\Models;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+use Fossil\Models\Model;
 
 /**
- * Description of Index
+ * Description of TorrentState
  *
  * @author predakanga
+ * @Entity(repositoryClass="Impression\Models\Repositories\TorrentStateRepository")
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
-    }
+class TorrentState extends Model {
+    const INACTIVE = 0;
+    const DOWNLOADING = 1;
+    const UPLOADING = 2;
     
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
-    }
+    /** @Id @GeneratedValue @Column(type="integer") */
+    protected $id;
+    /** @ManyToOne(targetEntity="Torrent", inversedBy="states") */
+    protected $torrent;
+    /** @Column(type="integer") */
+    protected $currentState = self::INACTIVE;
+    /** @Column(type="datetime") */
+    protected $lastActive;
+    /** @Column(type="datetime") */
+    protected $startedAt;
+    /** @Column(type="integer") */
+    protected $uploaded;
+    /** @Column(type="integer") */
+    protected $downloaded;
+    /**
+     * @ManyToOne(targetEntity="Fossil\Plugins\Users\Models\User", inversedBy="torrentStates")
+     * @F:GenerateReverse
+     */
+    protected $user;
 }
 
 ?>

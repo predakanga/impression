@@ -27,32 +27,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression\Subscribers;
 
 use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+    Doctrine\Common\EventSubscriber,
+    Doctrine\ORM\Event\OnFlushEventArgs,
+    Impression\Models\Torrent;
 
 /**
- * Description of Index
+ * Description of TrackerUpdateSubscriber
  *
  * @author predakanga
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
+class TrackerUpdateSubscriber implements EventSubscriber {
+    public function getSubscribedEvents()
+    {
+        return array(\Doctrine\ORM\Events::onFlush);
+    }
+    
+    public function onFlush(OnFlushEventArgs $eventArgs) {
+        $em = $eventArgs->getEntityManager();
+        $uow = $em->getUnitOfWork();
+
+        foreach ($uow->getScheduledEntityInsertions() AS $entity) {
+            if($entity instanceof Torrent) {
+                echo "Added a torrent\n";
+            }
         }
-    }
-    
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
+
+        foreach ($uow->getScheduledEntityUpdates() AS $entity) {
+            if($entity instanceof Torrent) {
+                echo "Updated a torrent\n";
+            }
+        }
+
+        foreach ($uow->getScheduledEntityDeletions() AS $entity) {
+            if($entity instanceof Torrent) {
+                echo "Deleted a torrent\n";
+            }
+        }
     }
 }
 

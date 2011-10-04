@@ -1,5 +1,5 @@
 <html>
-  <head>{block name=assignations}{/block}
+  <head>{block name=repositories}{use fqcn="Impression\Models\TorrentState" as="TorrentState"}{/block}{block name=assignations}{/block}
     <title>Impression - {$title}</title>
     <link type="text/css" rel="stylesheet" href="static/raptor.css" />
     <link href='//fonts.googleapis.com/css?family=Rosario' rel='stylesheet' type='text/css' />
@@ -44,13 +44,13 @@
         <div id="mainContainer">
           <div id="leftCol">
             <a href="profile.html" class="profileImg iconImg">
-              <img src="http://media.steampowered.com/steamcommunity/public/images/avatars/4e/4e8dc5c1fa6ae4f081eaec596799ebe9f7268afc_full.jpg" />
+              <img src="http://www.gravatar.com/avatar/{$me->email|strtolower|trim|md5}?s=50&d=retro&pg=r" />
             </a>
             <div id="userDetails">
-              <a href="profile.html">Predatory Kangaroo</a>
-              <a href="profile.html">Power User</a>
-              <a href="snatchlist.php?type=down"><img src="static/downArrow.png" /> 0</a>
-              <a href="snatchlist.php?type=up"><img src="static/upArrow.png" /> 3</a>
+              <a href="profile.html">{$me->name}</a>
+              <a href="profile.html">{$me->userClass->name}</a>
+              <a href="snatchlist.php?type=down"><img src="static/downArrow.png" /> {TorrentState::getActiveDownloadCountForUser($me)}</a>
+              <a href="snatchlist.php?type=up"><img src="static/upArrow.png" /> {TorrentState::getActiveUploadCountForUser($me)}</a>
               <a href="snatchlist.php?type=hnr"><img src="static/hnr.png" /> 7</a>
             </div>
             <div id="navBar">

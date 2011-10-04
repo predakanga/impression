@@ -27,33 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression\Forms;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+use Fossil\Forms\BaseForm;
 
 /**
- * Description of Index
+ * Description of UploadForm
  *
  * @author predakanga
+ * @F:Form(name="Upload")
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
-    }
-    
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
-    }
+class Upload extends BaseForm {
+    /** @F:FormField */
+    public $name;
+    /** @F:FormField */
+    public $groupName;
+    /** @F:FormField(type="file") */
+    public $file;
 }
 
 ?>

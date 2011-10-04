@@ -29,30 +29,24 @@
 
 namespace Impression\Controllers;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+use Impression\Models\ImpressionUser;
 
 /**
- * Description of Index
+ * Description of login
  *
  * @author predakanga
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
-    }
-    
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
+class Login extends \Fossil\Plugins\Users\Controllers\Login {
+    protected function createUser() {
+        $user = parent::createUser();
+        
+        $impressionUser = new ImpressionUser();
+        $impressionUser->save();
+        
+        $user->impressionUser = $impressionUser;
+        $impressionUser->user = $user;
+        
+        return $user;
     }
 }
 

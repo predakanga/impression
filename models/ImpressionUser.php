@@ -27,32 +27,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression\Models;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
+use Fossil\Models\Model;
 
 /**
- * Description of Index
+ * Description of ImpressionUser
  *
  * @author predakanga
+ * @Entity
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
-    }
+class ImpressionUser extends Model {
+    /** @Id @GeneratedValue @Column(type="integer") */
+    protected $id;
+    /**
+     * @OneToOne(targetEntity="Fossil\Plugins\Users\Models\User", inversedBy="impressionUser")
+     * @F:GenerateReverse
+     */
+    protected $user;
+    /** @Column() */
+    protected $passkey;
     
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
+    public function __construct() {
+        parent::__construct();
+        
+        $this->passkey = md5(uniqid(true));
     }
 }
 

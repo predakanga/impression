@@ -27,33 +27,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression\Trackers;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
-
+use Fossil\BaseDriver,
+    Impression\Models\Torrent,
+    Impression\Models\ImpressionUser;
 /**
- * Description of Index
+ * Description of BaseTracker
  *
  * @author predakanga
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
-    }
+abstract class BaseTracker extends BaseDriver {
+    abstract public function registerTorrent(Torrent $torrent);
+    abstract public function removeTorrent(Torrent $torrent);
     
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
+    abstract public function registerUser(ImpressionUser $user);
+    abstract public function updateUserPasskey(ImpressionUser $user, $oldPasskey);
+    abstract public function updateUserAccess(ImpressionUser $user, $can_leech);
+    abstract public function removeUser(ImpressionUser $user);
     
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
-    }
+    abstract public function getWhitelist();
+    abstract public function addToWhitelist($clientID);
+    abstract public function renameOnWhitelist($oldClientID, $newClientID);
+    abstract public function removeFromWhitelist($clientID);
+    
+    abstract public function updateTorrentStates();
+    
+    abstract public function getAnnounceURL(ImpressionUser $user);
 }
 
 ?>

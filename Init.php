@@ -27,32 +27,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Controllers;
+namespace Impression;
 
 use Fossil\OM,
-    Fossil\Controllers\AutoController,
-    Fossil\Plugins\Users\Models\User;
-
+    Fossil\BaseInit,
+    Fossil\ObjectFactory,
+    Doctrine\Common\EventManager;
+    
 /**
- * Description of Index
+ * Description of Init
  *
  * @author predakanga
  */
-class Index extends AutoController {
-    public function indexAction() {
-        if(!User::me()) {
-            return "welcome";
-        } else {
-            return "index";
-        }
+class Init extends BaseInit {
+    protected function registerObjectFactories() {
+        ObjectFactory::registerType("Tracker", "Ocelot");
     }
-    
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
-    }
-    
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
+
+    protected function registerEventSubscribers(EventManager $evm) {
+        $evm->addEventSubscriber(new Subscribers\TrackerUpdateSubscriber);
     }
 }
 
