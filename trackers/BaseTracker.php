@@ -30,6 +30,7 @@
 namespace Impression\Trackers;
 
 use Fossil\BaseDriver,
+    Fossil\OM,
     Impression\Models\Torrent,
     Impression\Models\ImpressionUser;
 /**
@@ -54,6 +55,14 @@ abstract class BaseTracker extends BaseDriver {
     abstract public function updateTorrentStates();
     
     abstract public function getAnnounceURL(ImpressionUser $user);
+    
+    protected function getDefaultConfig() {
+        $trackerOpts = OM::Settings("Fossil", "tracker", NULL);
+        if($trackerOpts && isset($trackerOpts['config'])) {
+            return $trackerOpts['config'];
+        }
+        return NULL;
+    }
 }
 
 ?>

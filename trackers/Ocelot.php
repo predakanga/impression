@@ -52,7 +52,7 @@ class Ocelot extends BaseTracker {
      */
     protected function getPDO() {
         if(!$this->pdo) {
-            $db = $this->config['database'];
+            $db = $this->config['db_dbname'];
             $user = $this->config['db_user'];
             $pass = $this->config['db_pass'];
             if(isset($this->config['db_socket'])) {
@@ -69,7 +69,7 @@ class Ocelot extends BaseTracker {
             } else {
                 $dsn = "mysql:dbname={$db};host={$host};port={$port}";
             }
-            $this->pdo = new \PDO($dsn, $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
+            $this->pdo = new \PDO($dsn, $user, $pass, array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
         }
         return $this->pdo;
     }
@@ -83,22 +83,18 @@ class Ocelot extends BaseTracker {
         foreach($params as $key => $val) {
             $uri .= "&{$key}={$val}";
         }
-        return HTTP::get($uri);
+        return file_get_contents($uri);
     }
     
     protected function encodeInfohash($hash) {
         return rawurlencode($hash);
     }
     
-    protected function getDefaultConfig() {
-        return array();
-    }
-    
     public function registerTorrent(Torrent $torrent) {
         // First, insert the torrent into the DB
         $db = $this->getPDO();
-        $q = $db->query("INSERT INTO torrents (info_hash, Snatched, free_torrent) VALUES (:infohash, 0, 0)");
-        $q->bindParam("infohash", $torrent->infohash, \PDO::PARAM_LOB);
+        $q = $db->prepare("INSERT INTO torrents (info_hash, Snatched, free_torrent) VALUES (:infohash, 0, 0)");
+        $q->bindValue("infohash", $torrent->infohash, \PDO::PARAM_LOB);
         $q->execute();
         $trackerID = $db->lastInsertId();
         
@@ -112,8 +108,8 @@ class Ocelot extends BaseTracker {
     public function removeTorrent(Torrent $torrent) {
         // Update the DB
         $db = $this->getPDO();
-        $q = $db->query("DELETE FROM torrents WHERE ID = :trackerid");
-        $q->bindParam("trackerid", $torrent->trackerID);
+        $q = $db->prepare("DELETE FROM torrents WHERE ID = :trackerid");
+        $q->bindValue("trackerid", $torrent->trackerID);
         $q->execute();
         
         // And then update the tracker state
@@ -123,20 +119,22 @@ class Ocelot extends BaseTracker {
     public function registerUser(ImpressionUser $user) {
         // Update the DB
         $db = $this->getPDO();
-        $q = $db->query("INSERT INTO users (ID, torrent_pass, can_leech, enabled) VALUES (:id, :torrentpass, 0, 0)");
-        $q->bindParam("id", $user->id);
-        $q->bindParam("torrentpass", $user->passkey);
+        $q = $db->prepare("INSERT INTO users_main (torrent_pass, can_leech, enabled) VALUES (:torrentpass, 1, \"1\")");
+        
+        $q->bindValue("torrentpass", $user->passkey);
         $q->execute();
+
+        $user->trackerID = $db->lastInsertId();
         
         // Then update the tracker state
-        $this->runOcelotCommand('add_user', array('id' => $user->id, 'passkey' => $user->passkey));
+        $this->runOcelotCommand('add_user', array('id' => $user->trackerID, 'passkey' => $user->passkey));
     }
     public function updateUserPasskey(ImpressionUser $user, $oldPasskey) {
         // Update the DB
         $db = $this->getPDO();
-        $q = $db->query("UPDATE users SET torrent_pass = :torrentpass WHERE ID = :id");
-        $q->bindParam("torrentpass", $user->passkey);
-        $q->bindParam("id", $user->id);
+        $q = $db->prepare("UPDATE users_main SET torrent_pass = :torrentpass WHERE ID = :id");
+        $q->bindValue("torrentpass", $user->passkey);
+        $q->bindValue("id", $user->trackerID);
         $q->execute();
         
         // Then update the tracker state
@@ -146,9 +144,9 @@ class Ocelot extends BaseTracker {
     public function updateUserAccess(ImpressionUser $user, $can_leech) {
         // Update the DB
         $db = $this->getPDO();
-        $q = $db->query("UPDATE users SET can_leech = :can_leech WHERE ID = :id");
-        $q->bindParam("id", $user->id);
-        $q->bindParam("can_leech", $can_leech ? 1 : 0, \PDO::PARAM_BOOL);
+        $q = $db->prepare("UPDATE users_main SET can_leech = :can_leech WHERE ID = :id");
+        $q->bindValue("id", $user->trackerID);
+        $q->bindValue("can_leech", $can_leech ? 1 : 0, \PDO::PARAM_BOOL);
         $q->execute();
         
         // Then update the tracker state
@@ -158,8 +156,8 @@ class Ocelot extends BaseTracker {
     public function removeUser(ImpressionUser $user) {
         // Update the DB
         $db = $this->getPDO();
-        $q = $db->query("DELETE FROM users WHERE ID = :id");
-        $q->bindParam("id", $user->id);
+        $q = $db->prepare("DELETE FROM users_main WHERE ID = :id");
+        $q->bindValue("id", $user->trackerID);
         $q->execute();
         
         // Then update the tracker state
@@ -168,15 +166,15 @@ class Ocelot extends BaseTracker {
     
     public function getWhitelist() {
         $db = $this->getPDO();
-        $q = $db->query("SELECT * FROM client_whitelist");
+        $q = $db->prepare("SELECT * FROM xbt_client_whitelist");
         $q->execute();
         return $q->fetchAll();
     }
     public function addToWhitelist($clientID) {
         // Update the DB
         $db = $this->getPDO();
-        $q = $db->query("DELETE FROM client_whitelist WHERE peer_id = :clientid");
-        $q->bindParam("clientid", $clientID);
+        $q = $db->prepare("DELETE FROM client_whitelist WHERE peer_id = :clientid");
+        $q->bindValue("clientid", $clientID);
         $q->execute();
         
         // Update tracker state
@@ -185,9 +183,9 @@ class Ocelot extends BaseTracker {
     public function renameOnWhitelist($oldClientID, $newClientID) {
         // Update the DB
         $db = $this->getPDO();
-        $q = $db->query("UPDATE client_whitelist SET peer_id = :newid WHERE peer_id = :oldid");
-        $q->bindParam("newid", $newClientID);
-        $q->bindParam("oldid", $oldClientID);
+        $q = $db->prepare("UPDATE xbt_client_whitelist SET peer_id = :newid WHERE peer_id = :oldid");
+        $q->bindValue("newid", $newClientID);
+        $q->bindValue("oldid", $oldClientID);
         $q->execute();
         
         // Update tracker state
@@ -197,8 +195,8 @@ class Ocelot extends BaseTracker {
     public function removeFromWhitelist($clientID) {
         // Update the DB
         $db = $this->getPDO();
-        $q = $db->query("DELETE FROM client_whitelist WHERE peer_id = :clientid");
-        $q->bindParam("clientid", $clientID);
+        $q = $db->prepare("DELETE FROM xbt_client_whitelist WHERE peer_id = :clientid");
+        $q->bindValue("clientid", $clientID);
         $q->execute();
         
         // Update tracker state

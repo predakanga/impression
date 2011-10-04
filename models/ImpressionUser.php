@@ -29,7 +29,8 @@
 
 namespace Impression\Models;
 
-use Fossil\Models\Model;
+use Fossil\Models\Model,
+    Fossil\OM;
 
 /**
  * Description of ImpressionUser
@@ -47,11 +48,33 @@ class ImpressionUser extends Model {
     protected $user;
     /** @Column() */
     protected $passkey;
+    /** @Column(type="integer") */
+    protected $trackerID;
     
     public function __construct() {
         parent::__construct();
         
         $this->passkey = md5(uniqid(true));
+    }
+    
+    public function setPasskey($passkey) {
+        // If we've already been persisted, update on the tracker
+        $oldPasskey = $this->passkey;
+        $this->passkey = $passkey;
+        
+        OM::Tracker()->updateUserPasskey($this, $oldPasskey);
+    }
+    
+    public function save() {
+        parent::save();
+        
+        OM::Tracker()->registerUser($this);
+    }
+    
+    public function delete() {
+        parent::delete();
+        
+        OM::Tracker()->removeUser($this);
     }
 }
 

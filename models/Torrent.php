@@ -29,7 +29,8 @@
 
 namespace Impression\Models;
 
-use Fossil\Models\Model;
+use Fossil\Models\Model,
+    Fossil\OM;
 
 /**
  * Description of Torrent
