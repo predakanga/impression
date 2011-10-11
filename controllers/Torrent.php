@@ -59,7 +59,6 @@ class Torrent extends LoginRequiredController {
             
             // Create the torrent
             $torrent = new TorrentModel();
-            $torrent->group = $this->decideTorrentGroup($uploadForm->groupName);
             $torrent->filename = $uploadForm->file['name'];
             // Process the uploaded file
             $decoder->decodeFile($uploadForm->file['tmp_name']);
@@ -67,6 +66,7 @@ class Torrent extends LoginRequiredController {
             // Sanitise the data
             $sanitisedDict = $this->sanitiseTorrent($decoder->getData());
             $decoder->setData($sanitisedDict);
+            $torrent->group = $this->decideTorrentGroup($uploadForm->file['name'], $sanitisedDict);
             // And store it
             $torrent->torrentData = $encoder->encode($sanitisedDict);
             $torrent->infohash = $decoder->getInfoHash(true);
@@ -96,12 +96,12 @@ class Torrent extends LoginRequiredController {
         return $data;
     }
     
-    protected function decideTorrentGroup($groupName) {
-        $group = TorrentGroup::findOneByName($groupName);
+    protected function decideTorrentGroup($filename, $torrentData) {
+        $group = TorrentGroup::findOneByName($filename);
         
         if(!$group) {
             $group = new TorrentGroup();
-            $group->name = $groupName;
+            $group->name = $filename;
             $group->save();
         }
         
