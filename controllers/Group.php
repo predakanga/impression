@@ -27,30 +27,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Impression\Models;
+namespace Impression\Controllers;
 
-use Fossil\Models\Model,
-    Fossil\Interfaces\ITemplated;
+use Fossil\OM,
+    Fossil\Controllers\AutoController,
+    Fossil\Requests\BaseRequest,
+    Impression\Models\TorrentGroup;
 
 /**
- * Description of TorrentGroup
+ * Description of Group
  *
  * @author predakanga
- * @Entity
- * @InheritanceType("JOINED")
- * @DiscriminatorColumn(name="inheritedType", type="string")
- * @DiscriminatorMap({"TorrentGroup" = "TorrentGroup"})
  */
-class TorrentGroup extends Model implements ITemplated {
-    /** @Id @GeneratedValue @Column(type="integer") */
-    protected $id;
-    /** @Column(type="string") */
-    protected $name;
-    /** @OneToMany(targetEntity="Torrent", mappedBy="group") */
-    protected $torrents;
+class Group extends AutoController {
+    public function indexAction() {
+        return "list";
+    }
     
-    public function getTemplateName() {
-        return "fossil:group/row_group";
+    public function runList(BaseRequest $req) {
+        $items = OM::ORM()->getEM()->createQuery('SELECT grp FROM Impression\Models\TorrentGroup grp');
+        return OM::obj("Responses", "Template")->create("fossil:group/list", array('groups' => $items));
     }
 }
 
