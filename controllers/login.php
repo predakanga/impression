@@ -38,15 +38,7 @@ use Impression\Models\ImpressionUser;
  */
 class Login extends \Fossil\Plugins\Users\Controllers\Login {
     protected function createUser() {
-        $user = parent::createUser();
-        
-        $impressionUser = new ImpressionUser();
-        $impressionUser->save();
-        
-        $user->impressionUser = $impressionUser;
-        $impressionUser->user = $user;
-        
-        return $user;
+        return new ImpressionUser();
     }
 }
 

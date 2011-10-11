@@ -37,15 +37,9 @@ use Fossil\Models\Model,
  *
  * @author predakanga
  * @Entity
+ * @F:ExtendsDiscriminatorMap
  */
-class ImpressionUser extends Model {
-    /** @Id @GeneratedValue @Column(type="integer") */
-    protected $id;
-    /**
-     * @OneToOne(targetEntity="Fossil\Plugins\Users\Models\User", inversedBy="impressionUser")
-     * @F:GenerateReverse
-     */
-    protected $user;
+class ImpressionUser extends \Fossil\Plugins\Users\Models\User {
     /** @Column() */
     protected $passkey;
     /** @Column(type="integer") */
