@@ -91,7 +91,7 @@ class Torrent extends LoginRequiredController {
         }
 
         $data['info']['private'] = 1;
-        $data['announce'] = "10:0xDEADBEEF";
+        $data['announce'] = "0xDEADBEEF";
         
         return $data;
     }
@@ -123,7 +123,7 @@ class Torrent extends LoginRequiredController {
         $announceURL = OM::Tracker()->getAnnounceURL(User::me());
         $announceStr = strlen($announceURL) . ":" . $announceURL;
         
-        $toPrint = str_replace("0xDEADBEEF", $announceStr, $torrent->torrentData);
+        $toPrint = str_replace("10:0xDEADBEEF", $announceStr, $torrent->torrentData);
         echo $toPrint;
         die();
     }
