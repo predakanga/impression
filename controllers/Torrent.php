@@ -120,7 +120,7 @@ class Torrent extends LoginRequiredController {
         
         header("Content-Disposition: attachment; filename=\"{$torrent->filename}\"");
         // Replace the announce URL
-        $announceURL = OM::Tracker()->getAnnounceURL(User::me()->impressionUser);
+        $announceURL = OM::Tracker()->getAnnounceURL(User::me());
         $announceStr = strlen($announceURL) . ":" . $announceURL;
         
         $toPrint = str_replace("0xDEADBEEF", $announceStr, $torrent->torrentData);
