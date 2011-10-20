@@ -49,7 +49,7 @@ class TorrentGroup extends Model implements ITemplated {
     /** @OneToMany(targetEntity="Torrent", mappedBy="group") */
     protected $torrents;
     
-    public function getTemplateName() {
+    public function getTemplateName($mode) {
         return "fossil:group/row_group";
     }
 }
