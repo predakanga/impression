@@ -20,7 +20,9 @@
         <input type="hidden" name="form_id" value="{$form_id}" />
 {/if}
 {foreach $fields as $field}
+{if $field.type != "hidden"}
         <label for="{$form_id}_{$field.name}">{$field.label}:</label>
+{/if}
 {if $field.type == "select"}
         <select id="{$form_id}_{$field.name}" name="{$field.name}">
 {foreach $field.options as $opt}
@@ -31,6 +33,8 @@
 {/if}<br />
 {/foreach}
         </select><br />
+{elseif $field.type == "textarea"}
+        <textarea id="{$form_id}_{$field.name}" name="{$field.name}">{$field.value}</textarea>
 {else}
 {if $field.value}
         <input id="{$form_id}_{$field.name}" type="{$field.type}" name="{$field.name}" value="{$field.value}" />
