@@ -1,8 +1,10 @@
 <html>
   <head>{block name=repositories}{use fqcn="Impression\Models\TorrentState" as="TorrentState"}{/block}{block name=assignations}{/block}
     <title>Impression - {$title}</title>
+    {block name="css"}
     <link type="text/css" rel="stylesheet" href="static/raptor.css" />
     <link href='//fonts.googleapis.com/css?family=Rosario' rel='stylesheet' type='text/css' />
+    {/block}
   </head>
   <body class="rbx hasLeftCol">
     <div id="purpleBar"></div>

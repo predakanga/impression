@@ -1,8 +1,10 @@
 <html>
   <head>{block name=assignations}{/block}
     <title>Welcome to Impression</title>
+    {block name="css"}
     <link type="text/css" rel="stylesheet" href="static/raptor.css" />
     <link href='//fonts.googleapis.com/css?family=Rosario' rel='stylesheet' type='text/css' />
+    {/block}
   </head>
   <body class="rbx hasLeftCol">
       <img src="static/gradient.png" alt="background" style="position: fixed; top: 41px; left: 0; width: 100%; height: 100%; z-index: -1;"/>
