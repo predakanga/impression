@@ -44,6 +44,17 @@ class ImpressionUser extends \Fossil\Plugins\Users\Models\User {
     protected $passkey;
     /** @Column(type="integer") */
     protected $trackerID;
+    /** @OneToMany(targetEntity="TorrentState", mappedBy="user") */
+    protected $torrentStates;
+    
+    /** @Column(type="integer") */
+    protected $totalUploaded;
+    /** @Column(type="integer") */
+    protected $totalDownloaded;
+    /** @Column(type="integer") */
+    protected $totalSnatches;
+    /** @Column(type="integer") */
+    protected $totalUploadCount;
     
     public function __construct() {
         parent::__construct();

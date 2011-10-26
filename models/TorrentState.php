@@ -57,8 +57,7 @@ class TorrentState extends Model {
     /** @Column(type="integer") */
     protected $downloaded;
     /**
-     * @ManyToOne(targetEntity="Fossil\Plugins\Users\Models\User", inversedBy="torrentStates")
-     * @F:GenerateReverse
+     * @ManyToOne(targetEntity="ImpressionUser", inversedBy="torrentStates")
      */
     protected $user;
 }
