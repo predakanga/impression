@@ -29,8 +29,7 @@
 
 namespace Impression\Controllers;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
+use Fossil\Controllers\AutoController,
     Fossil\Plugins\Users\Models\User;
 
 /**
@@ -40,19 +39,19 @@ use Fossil\OM,
  */
 class Index extends AutoController {
     public function indexAction() {
-        if(!User::me()) {
+        if(!User::me($this->container)) {
             return "welcome";
         } else {
             return "index";
         }
     }
     
-    protected function runWelcome($req) {
-        return OM::obj("Responses", "Template")->create("fossil:welcome/index");
+    public function runWelcome($req) {
+        return $this->templateResponse("fossil:welcome/index");
     }
     
-    protected function runIndex($req) {
-        return OM::obj("Responses", "Template")->create("fossil:index/index");
+    public function runIndex($req) {
+        return $this->templateResponse("fossil:index/index");
     }
 }
 

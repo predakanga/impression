@@ -28,10 +28,10 @@
  */
 
 
-use Fossil\Fossil;
+use Fossil\Core;
 
-require_once(__DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Fossil" . DIRECTORY_SEPARATOR . "Fossil.php");
+require_once(__DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR .
+             "Fossil" . DIRECTORY_SEPARATOR . "Autoloader.php");
 
-Fossil::setApp("Impression", __DIR__);
-$core = Fossil::bootstrap(Fossil::TESTING);
+$core = Core::create("Impression", __DIR__);
 $core->run();

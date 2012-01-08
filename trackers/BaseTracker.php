@@ -37,8 +37,15 @@ use Fossil\BaseDriver,
  * Description of BaseTracker
  *
  * @author predakanga
+ * @F:Provides("Tracker")
  */
 abstract class BaseTracker extends BaseDriver {
+    public function __construct($container) {
+        $this->driverType = "Tracker";
+        
+        parent::__construct($container);
+    }
+    
     abstract public function registerTorrent(Torrent $torrent);
     abstract public function removeTorrent(Torrent $torrent);
     
@@ -55,14 +62,6 @@ abstract class BaseTracker extends BaseDriver {
     abstract public function updateTorrentStates();
     
     abstract public function getAnnounceURL(ImpressionUser $user);
-    
-    protected function getDefaultConfig() {
-        $trackerOpts = OM::Settings("Fossil", "tracker", NULL);
-        if($trackerOpts && isset($trackerOpts['config'])) {
-            return $trackerOpts['config'];
-        }
-        return NULL;
-    }
 }
 
 ?>

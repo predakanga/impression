@@ -56,8 +56,14 @@ class ImpressionUser extends \Fossil\Plugins\Users\Models\User {
     /** @Column(type="integer") */
     protected $totalUploadCount;
     
-    public function __construct() {
-        parent::__construct();
+    /**
+     * @F:Inject("Tracker")
+     * @var Impression\Trackers\BaseTracker
+     */
+    protected $tracker;
+    
+    public function __construct($container) {
+        parent::__construct($container);
         
         $this->passkey = md5(uniqid(true));
     }
@@ -67,19 +73,19 @@ class ImpressionUser extends \Fossil\Plugins\Users\Models\User {
         $oldPasskey = $this->passkey;
         $this->passkey = $passkey;
         
-        OM::Tracker()->updateUserPasskey($this, $oldPasskey);
+        $this->tracker->updateUserPasskey($this, $oldPasskey);
     }
     
     public function save() {
         parent::save();
         
-        OM::Tracker()->registerUser($this);
+        $this->tracker->registerUser($this);
     }
     
     public function delete() {
         parent::delete();
         
-        OM::Tracker()->removeUser($this);
+        $this->tracker->removeUser($this);
     }
 }
 

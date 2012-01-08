@@ -40,12 +40,8 @@ use Fossil\OM,
  * @author predakanga
  */
 class Init extends BaseInit {
-    protected function registerObjectFactories() {
-        ObjectFactory::registerType("Tracker", "Ocelot");
-    }
-
     protected function registerEventSubscribers(EventManager $evm) {
-        $evm->addEventSubscriber(new Subscribers\TrackerUpdateSubscriber);
+        $evm->addEventSubscriber(new Subscribers\TrackerUpdateSubscriber($this->container));
     }
 }
 

@@ -29,12 +29,12 @@
 
 namespace Impression\Controllers;
 
-use Fossil\OM,
-    Fossil\Requests\BaseRequest,
+use Fossil\Requests\BaseRequest,
     Impression\Models\Torrent as TorrentModel,
     Impression\Models\TorrentGroup,
     Impression\BDecode,
     Fossil\Plugins\Users\Models\User,
+    Impression\Forms\Upload as UploadForm,
     Doctrine\Common\Util\Debug;
 
 /**
@@ -43,22 +43,25 @@ use Fossil\OM,
  * @author predakanga
  */
 class Torrent extends LoginRequiredController {
-    public function runList(BaseRequest $req) {
-        Debug::dump(TorrentModel::findAll());
+    /**
+     * @F:Inject("Tracker")
+     * @var Impression\Trackers\BaseTracker
+     */
+    protected $tracker;
+    
+    public function runList() {
+        Debug::dump(TorrentModel::findAll($this->container));
     }
     
-    public function runUpload(BaseRequest $req) {
+    public function runUpload(UploadForm $uploadForm) {
         require_once("File/Bittorrent2/Encode.php");
-        
-        /** @var Impression\Forms\Upload */
-        $uploadForm = OM::Form("Upload");
         
         if($uploadForm->isSubmitted() && $uploadForm->isValidSubmission()) {
             $decoder = new BDecode;
             $encoder = new \File_Bittorrent2_Encode;
             
             // Create the torrent
-            $torrent = new TorrentModel();
+            $torrent = new TorrentModel($this->container);
             $torrent->filename = $uploadForm->file['name'];
             // Process the uploaded file
             $decoder->decodeFile($uploadForm->file['tmp_name']);
@@ -72,11 +75,11 @@ class Torrent extends LoginRequiredController {
             $torrent->infohash = $decoder->getInfoHash(true);
             $torrent->trackerID = 2;
             $torrent->uploadedAt = new \DateTime();
-            $torrent->uploader = User::me();
+            $torrent->uploader = User::me($this->container);
             $torrent->save();
-            return OM::obj("Responses", "Redirect")->create("?controller=torrent&action=list");
+            return $this->redirectResponse("?controller=torrent&action=list");
         } else {
-            return OM::obj("Responses", "Template")->create("fossil:torrent/upload");
+            return $this->templateResponse("fossil:torrent/upload");
         }
     }
     
@@ -97,10 +100,10 @@ class Torrent extends LoginRequiredController {
     }
     
     protected function decideTorrentGroup($filename, $torrentData) {
-        $group = TorrentGroup::findOneByName($filename);
+        $group = TorrentGroup::findOneByName($this->container, $filename);
         
         if(!$group) {
-            $group = new TorrentGroup();
+            $group = new TorrentGroup($this->container);
             $group->name = $filename;
             $group->save();
         }
@@ -108,19 +111,16 @@ class Torrent extends LoginRequiredController {
         return $group;
     }
     
-    public function runDownload(BaseRequest $req) {
-        if(!isset($req->args['id'])) {
-            return OM::obj("Responses", "Redirect")->create("?controller=torrent&action=list");
-        }
-        
-        $torrent = TorrentModel::find($req->args['id']);
+    public function runDownload(TorrentModel $id = null) {
+        $torrent = $id;
+
         if(!$torrent) {
-            return OM::obj("Responses", "Redirect")->create("?controller=torrent&action=list");
+            return $this->redirectResponse("?controller=torrent&action=list");
         }
         
         header("Content-Disposition: attachment; filename=\"{$torrent->filename}\"");
         // Replace the announce URL
-        $announceURL = OM::Tracker()->getAnnounceURL(User::me());
+        $announceURL = $this->tracker->getAnnounceURL(User::me($this->container));
         $announceStr = strlen($announceURL) . ":" . $announceURL;
         
         $toPrint = str_replace("10:0xDEADBEEF", $announceStr, $torrent->torrentData);

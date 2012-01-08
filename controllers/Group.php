@@ -29,8 +29,7 @@
 
 namespace Impression\Controllers;
 
-use Fossil\OM,
-    Fossil\Controllers\AutoController,
+use Fossil\Controllers\AutoController,
     Fossil\Requests\BaseRequest,
     Impression\Models\TorrentGroup;
 
@@ -40,13 +39,19 @@ use Fossil\OM,
  * @author predakanga
  */
 class Group extends AutoController {
+    /**
+     * @F:Inject("ORM")
+     * @var Fossil\ORM
+     */
+    protected $orm;
+    
     public function indexAction() {
         return "list";
     }
     
     public function runList(BaseRequest $req) {
-        $items = OM::ORM()->getEM()->createQuery('SELECT grp FROM Impression\Models\TorrentGroup grp');
-        return OM::obj("Responses", "Template")->create("fossil:group/list", array('groups' => $items));
+        $items = $this->orm->getEM()->createQuery('SELECT grp FROM Impression\Models\TorrentGroup grp');
+        return $this->templateResponse("fossil:group/list", array('groups' => $items));
     }
 }
 

@@ -29,7 +29,7 @@
 
 namespace Impression\Subscribers;
 
-use Fossil\OM,
+use Fossil\Object,
     Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Event\OnFlushEventArgs,
     Impression\Models\Torrent;
@@ -39,7 +39,13 @@ use Fossil\OM,
  *
  * @author predakanga
  */
-class TrackerUpdateSubscriber implements EventSubscriber {
+class TrackerUpdateSubscriber extends Object implements EventSubscriber {
+    /**
+     * @F:Inject("Tracker")
+     * @var Impression\Trackers\BaseTracker
+     */
+    protected $tracker;
+    
     public function getSubscribedEvents()
     {
         return array(\Doctrine\ORM\Events::onFlush);
@@ -51,7 +57,7 @@ class TrackerUpdateSubscriber implements EventSubscriber {
 
         foreach ($uow->getScheduledEntityInsertions() AS $entity) {
             if($entity instanceof Torrent) {
-                echo "Added a torrent\n";
+                $this->tracker->registerTorrent($entity);
             }
         }
 
@@ -63,7 +69,7 @@ class TrackerUpdateSubscriber implements EventSubscriber {
 
         foreach ($uow->getScheduledEntityDeletions() AS $entity) {
             if($entity instanceof Torrent) {
-                echo "Deleted a torrent\n";
+                $this->tracker->removeTorrent($entity);
             }
         }
     }

@@ -65,12 +65,18 @@ class Torrent extends Model {
      */
     protected $currentStates;
     
+    /**
+     * @F:Inject("Tracker")
+     * @var Impression\Trackers\BaseTracker
+     */
+    protected $tracker;
+    
     public function save() {
         // Save the torrent
         parent::save();
         
         // And send it to the tracker
-        OM::Tracker()->registerTorrent($this);
+        $this->tracker->registerTorrent($this);
     }
     
     public function delete() {
@@ -78,7 +84,7 @@ class Torrent extends Model {
         parent::delete();
         
         // And update the tracker
-        OM::Tracker()->removeTorrent($this);
+        $this->tracker->removeTorrent($this);
     }
 }
 

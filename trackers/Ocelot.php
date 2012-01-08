@@ -37,7 +37,7 @@ use Impression\Models\Torrent,
  * Description of Ocelot
  *
  * @author predakanga
- * @F:Object(type="Tracker", name="Ocelot")
+ * @F:DefaultProvider
  */
 class Ocelot extends BaseTracker {
     protected $pdo;
@@ -45,7 +45,7 @@ class Ocelot extends BaseTracker {
     static function usable() { return extension_loaded('pdo') && in_array("mysql", \PDO::getAvailableDrivers()); }
     static function getName() { return "Ocelot"; }
     static function getVersion() { return 1.0; }
-    static function getForm() { return null; }
+    static function getFormName() { return null; }
     
     /**
      * @return \PDO
