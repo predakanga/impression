@@ -38,7 +38,7 @@ use Impression\Models\ImpressionUser;
  */
 class Login extends \Fossil\Plugins\Users\Controllers\Login {
     protected function createUser() {
-        return new ImpressionUser($this->container);
+        return ImpressionUser::create($this->container);
     }
 }
 

@@ -61,7 +61,7 @@ class Torrent extends LoginRequiredController {
             $encoder = new \File_Bittorrent2_Encode;
             
             // Create the torrent
-            $torrent = new TorrentModel($this->container);
+            $torrent = TorrentModel::create($this->container);
             $torrent->filename = $uploadForm->file['name'];
             // Process the uploaded file
             $decoder->decodeFile($uploadForm->file['tmp_name']);
@@ -103,7 +103,7 @@ class Torrent extends LoginRequiredController {
         $group = TorrentGroup::findOneByName($this->container, $filename);
         
         if(!$group) {
-            $group = new TorrentGroup($this->container);
+            $group = TorrentGroup::create($this->container);
             $group->name = $filename;
             $group->save();
         }
