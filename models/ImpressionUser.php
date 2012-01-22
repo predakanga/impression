@@ -48,13 +48,13 @@ class ImpressionUser extends \Fossil\Plugins\Users\Models\User {
     protected $torrentStates;
     
     /** @Column(type="integer") */
-    protected $totalUploaded;
+    protected $totalUploaded = 0;
     /** @Column(type="integer") */
-    protected $totalDownloaded;
+    protected $totalDownloaded = 0;
     /** @Column(type="integer") */
-    protected $totalSnatches;
+    protected $totalSnatches = 0;
     /** @Column(type="integer") */
-    protected $totalUploadCount;
+    protected $totalUploadCount = 0;
     
     /**
      * @F:Inject("Tracker")
