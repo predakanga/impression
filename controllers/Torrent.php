@@ -56,7 +56,7 @@ class Torrent extends LoginRequiredController {
     public function runUpload(UploadForm $uploadForm) {
         require_once("File/Bittorrent2/Encode.php");
         
-        if($uploadForm->isSubmitted() && $uploadForm->isValidSubmission()) {
+        if($uploadForm->isSubmitted() && $uploadForm->isValid()) {
             $decoder = new BDecode;
             $encoder = new \File_Bittorrent2_Encode;
             
