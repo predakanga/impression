@@ -46,11 +46,11 @@ class Index extends AutoController {
         }
     }
     
-    public function runWelcome($req) {
+    public function runWelcome() {
         return $this->templateResponse("fossil:welcome/index");
     }
     
-    public function runIndex($req) {
+    public function runIndex() {
         return $this->templateResponse("fossil:index/index");
     }
 }

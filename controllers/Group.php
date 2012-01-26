@@ -49,7 +49,7 @@ class Group extends AutoController {
         return "list";
     }
     
-    public function runList(BaseRequest $req) {
+    public function runList() {
         $items = $this->orm->getEM()->createQuery('SELECT grp FROM Impression\Models\TorrentGroup grp');
         return $this->templateResponse("fossil:group/list", array('groups' => $items));
     }
